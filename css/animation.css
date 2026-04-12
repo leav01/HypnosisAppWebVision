@@ -45,60 +45,58 @@
   opacity: 1;
 }
 
-/* ---- Spiral ---- */
+/* ---- Concentric Rings (expanding outward from center) ---- */
+
+/* Register custom property so the browser can animate it */
+@property --ring-offset {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
 .spiral {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 200vmax;
-  height: 200vmax;
-  transform: translate(-50%, -50%);
-  will-change: transform;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
   opacity: 0;
   transition: opacity 1s ease;
-  z-index: 1;
-  background: conic-gradient(
-    from 0deg,
-    var(--accent-pink) 0deg,
-    transparent 20deg,
-    var(--accent-purple) 40deg,
-    transparent 60deg,
-    var(--accent-pink) 80deg,
-    transparent 100deg,
-    var(--accent-purple) 120deg,
-    transparent 140deg,
-    var(--accent-pink) 160deg,
-    transparent 180deg,
-    var(--accent-purple) 200deg,
-    transparent 220deg,
-    var(--accent-pink) 240deg,
-    transparent 260deg,
-    var(--accent-purple) 280deg,
-    transparent 300deg,
-    var(--accent-pink) 320deg,
-    transparent 340deg,
-    var(--accent-pink) 360deg
-  );
-  animation:
-    spiral-rotate var(--rotation-speed) linear infinite,
-    spiral-pulse 8s ease-in-out infinite;
 }
 
 .spiral.active {
   opacity: 1;
 }
 
-@keyframes spiral-rotate {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(360deg); }
+.spiral-layer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300vmax;
+  height: 300vmax;
+  margin-top: -150vmax;
+  margin-left: -150vmax;
+  border-radius: 50%;
+  --ring-offset: 0px;
+  background: repeating-radial-gradient(
+    circle at center,
+    #c040ff var(--ring-offset),
+    #c040ff calc(var(--ring-offset) + 28px),
+    #000000 calc(var(--ring-offset) + 28px),
+    #000000 calc(var(--ring-offset) + 56px)
+  );
 }
 
-@keyframes spiral-pulse {
-  0%, 100% { scale: 1; }
-  50% { scale: 1.05; }
+.spiral.active .spiral-layer {
+  animation: ring-expand var(--expand-speed, 3s) linear infinite;
 }
 
-/* ---- Vignette (dark edges) ---- */
+@keyframes ring-expand {
+  from { --ring-offset: 0px; }
+  to   { --ring-offset: 56px; }
+}
+
+/* ---- Vignette (dark edges, tunnel effect) ---- */
 .vignette {
   position: absolute;
   top: 0; left: 0;
@@ -106,27 +104,31 @@
   height: 100%;
   background: radial-gradient(
     ellipse at center,
-    transparent 30%,
-    rgba(0, 0, 0, 0.6) 70%,
-    rgba(0, 0, 0, 0.9) 100%
+    transparent 15%,
+    rgba(0, 0, 0, 0.3) 35%,
+    rgba(0, 0, 0, 0.7) 60%,
+    rgba(0, 0, 0, 0.95) 85%
   );
   z-index: 2;
   pointer-events: none;
 }
 
-/* ---- Heart ---- */
+/* ---- Heart (pink, glowing) ---- */
 .heart {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 100px;
-  height: 90px;
-  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 108px;
+  transform: translate(-50%, calc(-50% + 10px));
   will-change: transform;
   z-index: 3;
   opacity: 0;
   transition: opacity 1s ease;
-  filter: drop-shadow(0 0 20px rgba(255, 77, 141, 0.5));
+  filter:
+    drop-shadow(0 0 25px rgba(255, 77, 141, 0.8))
+    drop-shadow(0 0 60px rgba(255, 77, 141, 0.4))
+    drop-shadow(0 0 100px rgba(200, 100, 255, 0.25));
 }
 
 .heart.active {
@@ -138,14 +140,14 @@
 .heart::after {
   content: '';
   position: absolute;
-  width: 52px;
-  height: 80px;
+  width: 62px;
+  height: 96px;
   background: var(--accent-pink);
-  border-radius: 52px 52px 0 0;
+  border-radius: 62px 62px 0 0;
 }
 
 .heart::before {
-  left: 50px;
+  left: 60px;
   transform: rotate(-45deg);
   transform-origin: 0 100%;
 }
@@ -157,30 +159,30 @@
 }
 
 @keyframes heartbeat {
-  0%   { transform: translate(-50%, -50%) scale(1); }
-  15%  { transform: translate(-50%, -50%) scale(1.15); }
-  30%  { transform: translate(-50%, -50%) scale(1); }
-  45%  { transform: translate(-50%, -50%) scale(1.1); }
-  60%  { transform: translate(-50%, -50%) scale(1); }
-  100% { transform: translate(-50%, -50%) scale(1); }
+  0%   { transform: translate(-50%, calc(-50% + 10px)) scale(1); }
+  14%  { transform: translate(-50%, calc(-50% + 10px)) scale(1.18); }
+  28%  { transform: translate(-50%, calc(-50% + 10px)) scale(1); }
+  42%  { transform: translate(-50%, calc(-50% + 10px)) scale(1.12); }
+  56%  { transform: translate(-50%, calc(-50% + 10px)) scale(1); }
+  100% { transform: translate(-50%, calc(-50% + 10px)) scale(1); }
 }
 
-/* Heart glow synced with heartbeat */
+/* Heart glow pulse synced with heartbeat */
 .heart.active::before,
 .heart.active::after {
   animation: heart-glow var(--heartbeat-speed) infinite;
 }
 
 @keyframes heart-glow {
-  0%   { box-shadow: 0 0 10px rgba(255, 77, 141, 0.3); }
-  15%  { box-shadow: 0 0 30px rgba(255, 77, 141, 0.6), 0 0 60px rgba(255, 77, 141, 0.2); }
-  30%  { box-shadow: 0 0 10px rgba(255, 77, 141, 0.3); }
-  45%  { box-shadow: 0 0 25px rgba(255, 77, 141, 0.5); }
-  60%  { box-shadow: 0 0 10px rgba(255, 77, 141, 0.3); }
-  100% { box-shadow: 0 0 10px rgba(255, 77, 141, 0.3); }
+  0%   { box-shadow: 0 0 15px rgba(255, 77, 141, 0.4), 0 0 40px rgba(255, 77, 141, 0.15); }
+  14%  { box-shadow: 0 0 40px rgba(255, 77, 141, 0.7), 0 0 80px rgba(255, 77, 141, 0.35), 0 0 120px rgba(200, 100, 255, 0.15); }
+  28%  { box-shadow: 0 0 15px rgba(255, 77, 141, 0.4), 0 0 40px rgba(255, 77, 141, 0.15); }
+  42%  { box-shadow: 0 0 30px rgba(255, 77, 141, 0.6), 0 0 70px rgba(255, 77, 141, 0.3); }
+  56%  { box-shadow: 0 0 15px rgba(255, 77, 141, 0.4), 0 0 40px rgba(255, 77, 141, 0.15); }
+  100% { box-shadow: 0 0 15px rgba(255, 77, 141, 0.4), 0 0 40px rgba(255, 77, 141, 0.15); }
 }
 
-/* ---- Particles ---- */
+/* ---- Particles (kept for compatibility, not used by default) ---- */
 .particles {
   position: absolute;
   top: 0; left: 0;
@@ -203,19 +205,15 @@
     opacity: 0;
     transform: translateY(100vh) translateX(0);
   }
-  10% {
-    opacity: 0.7;
-  }
-  90% {
-    opacity: 0.7;
-  }
+  10% { opacity: 0.7; }
+  90% { opacity: 0.7; }
   100% {
     opacity: 0;
     transform: translateY(-20vh) translateX(var(--drift-x, 30px));
   }
 }
 
-/* ---- Hue Shift Overlay ---- */
+/* ---- Hue Shift Overlay (kept for compatibility, not used by default) ---- */
 .hue-overlay {
   position: absolute;
   top: 0; left: 0;

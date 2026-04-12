@@ -173,6 +173,24 @@
           </div>
         </div>
 
+        <!-- Duration -->
+        <div class="setting-card">
+          <div class="setting-card-header">
+            <div class="setting-icon"><i class="fa-solid fa-clock"></i></div>
+            <button class="setting-detail-btn" data-setting="duration" title="查看详细说明">
+              <i class="fa-solid fa-circle-info"></i>
+            </button>
+          </div>
+          <div class="setting-info">
+            <h3 class="setting-label">催眠持续时间</h3>
+            <p class="setting-desc">催眠动画的自动持续时长</p>
+          </div>
+          <div class="slider-group">
+            <input type="range" class="setting-slider" id="slider-duration" min="30" max="300" value="60" step="10">
+            <span class="slider-value" id="value-duration">1分</span>
+          </div>
+        </div>
+
         <!-- Intensity -->
         <div class="setting-card">
           <div class="setting-card-header">
@@ -281,8 +299,10 @@
         <span class="blackout-text" id="blackout-text"></span>
       </div>
 
-      <!-- Spiral -->
-      <div class="spiral" id="spiral"></div>
+      <!-- Spiral (single layer, seamless via @property animation) -->
+      <div class="spiral" id="spiral">
+        <div class="spiral-layer"></div>
+      </div>
 
       <!-- Vignette -->
       <div class="vignette"></div>

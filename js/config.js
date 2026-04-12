@@ -25,6 +25,7 @@ HypnoApp.DEFAULT_SETTINGS = Object.freeze({
   obedienceDepth: 3,
   sensitivity: 50,
   resistance: 30,
+  duration: 60,
 });
 
 // Obedience depth labels (index 0 = value 1)
@@ -34,10 +35,10 @@ HypnoApp.DEPTH_LABELS = Object.freeze([
 
 // Intensity -> animation speed mapping
 HypnoApp.INTENSITY_LEVELS = Object.freeze([
-  { minIntensity: 1,  maxIntensity: 3,  rotationSpeed: '8s',  heartbeatSpeed: '1.5s', saturation: 0.6,  label: '低' },
-  { minIntensity: 4,  maxIntensity: 6,  rotationSpeed: '5s',  heartbeatSpeed: '1.2s', saturation: 0.8,  label: '中' },
-  { minIntensity: 7,  maxIntensity: 9,  rotationSpeed: '3s',  heartbeatSpeed: '0.8s', saturation: 1.0,  label: '高' },
-  { minIntensity: 10, maxIntensity: 10, rotationSpeed: '2s',  heartbeatSpeed: '0.6s', saturation: 1.2,  label: '极限' },
+  { minIntensity: 1,  maxIntensity: 3,  heartbeatSpeed: '1.5s', expandSpeed: '2.5', saturation: 0.6,  label: '低' },
+  { minIntensity: 4,  maxIntensity: 6,  heartbeatSpeed: '1.2s', expandSpeed: '1.6', saturation: 0.8,  label: '中' },
+  { minIntensity: 7,  maxIntensity: 9,  heartbeatSpeed: '0.8s', expandSpeed: '1.0', saturation: 1.0,  label: '高' },
+  { minIntensity: 10, maxIntensity: 10, heartbeatSpeed: '0.6s', expandSpeed: '0.6', saturation: 1.2,  label: '极限' },
 ]);
 
 // Blackout phase text sequence
@@ -122,6 +123,25 @@ HypnoApp.SLIDER_CONFIG = Object.freeze([
       '中延迟（4-6秒）：标准设定，给予目标适度的心理准备时间，提升暗示接受度',
       '高延迟（7-10秒）：缓慢渐入，通过延长等待制造紧张感与期待感，增强催眠效果',
       '建议：首次使用建议设置3-5秒，根据目标反应逐步调整',
+    ],
+  },
+  {
+    key: 'duration',
+    label: '催眠持续时间',
+    icon: 'fa-clock',
+    description: '催眠动画的自动持续时长，到时间后自动退出',
+    min: 30, max: 300, step: 10,
+    format: function(v) {
+      var m = Math.floor(v / 60);
+      var s = v % 60;
+      return m > 0 ? (m + '分' + (s > 0 ? s + '秒' : '')) : (s + '秒');
+    },
+    details: [
+      '功能说明：设定催眠动画的自动持续时长，到达设定时间后动画将自动结束并返回控制面板',
+      '短时催眠（30-60秒）：快速暗示植入，适合简单指令或强化已有暗示',
+      '标准催眠（70-120秒）：常规催眠时长，足够完成中等复杂度的意识引导',
+      '深度催眠（130-200秒）：长时间持续暗示，适合深层意识改写或复杂行为模式植入',
+      '超长催眠（210-300秒）：极限催眠时长，用于彻底瓦解精神防线或完整的认知重构',
     ],
   },
   {
