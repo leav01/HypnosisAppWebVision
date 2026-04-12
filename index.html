@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>催眠控制系统 · HYPNOSIS CONTROL</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/login.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/animation.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+
+<body data-active-page="login">
+
+  <!-- ==================== Page 1: Login ==================== -->
+  <section id="page-login" class="page-section">
+    <div class="login-card" id="login-card">
+      <!-- Header -->
+      <div class="login-header">
+        <div class="login-icon" id="login-icon">
+          <i class="fa-solid fa-bullseye"></i>
+        </div>
+        <h1 class="login-title">催眠控制系统</h1>
+        <p class="login-subtitle">HYPNOSIS CONTROL SYSTEM</p>
+        <p class="login-version">v4.2.1 | 仅限授权人员</p>
+      </div>
+
+      <!-- Form -->
+      <form id="login-form" autocomplete="off">
+        <div class="input-group">
+          <i class="fa-solid fa-user input-icon"></i>
+          <input type="text" id="input-username" class="login-input" placeholder="用户名" autocomplete="off">
+        </div>
+        <div class="input-group">
+          <i class="fa-solid fa-lock input-icon"></i>
+          <input type="password" id="input-password" class="login-input" placeholder="访问密钥" autocomplete="off">
+        </div>
+        <button type="submit" class="login-button" id="login-button">
+          <span>用户登录</span>
+        </button>
+      </form>
+
+      <!-- Error -->
+      <div class="login-error" id="login-error" role="alert" aria-live="polite"></div>
+
+      <!-- Footer -->
+      <div class="login-footer">
+        <div class="footer-divider"></div>
+        <div class="footer-info">
+          <span><i class="fa-solid fa-diamond footer-icon"></i> 系统版本 v4.2.1</span>
+          <span><i class="fa-solid fa-diamond footer-icon"></i> 终端连接数: <span id="terminal-count">2,847</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== Page 2: Dashboard ==================== -->
+  <section id="page-dashboard" class="page-section">
+    <div class="dashboard-container">
+      <!-- Header Bar -->
+      <div class="dashboard-header">
+        <div class="dashboard-title">
+          <i class="fa-solid fa-bullseye"></i>
+          <span>催眠控制系统</span>
+        </div>
+        <div class="dashboard-user">
+          <span class="header-username" id="header-username"></span>
+          <button class="logout-button" id="logout-button">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>退出</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- User Info Card -->
+      <div class="user-info-card">
+        <div class="user-info-top">
+          <div class="user-avatar">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <div class="user-details">
+            <h2 class="user-name" id="user-name"></h2>
+            <div class="user-level-row">
+              <span class="level-text" id="level-text"></span>
+              <span class="tier-badge" id="tier-badge"></span>
+            </div>
+          </div>
+          <div class="status-dot active" id="status-dot"></div>
+        </div>
+        <div class="usage-section">
+          <div class="usage-label">
+            <span>本月使用</span>
+            <span class="usage-count" id="usage-count"></span>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progress-bar-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mode Selector -->
+      <div class="mode-section">
+        <div class="mode-header">
+          <h3 class="mode-title"><i class="fa-solid fa-layer-group"></i> 控制模式</h3>
+          <button class="mode-detail-btn" id="mode-detail-btn">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>查看详细说明</span>
+          </button>
+        </div>
+        <div class="mode-grid" id="mode-grid">
+          <button class="mode-card active" data-mode="hypnosis">
+            <i class="fa-solid fa-hurricane"></i>
+            <span>催眠</span>
+          </button>
+          <button class="mode-card" data-mode="arousal">
+            <i class="fa-solid fa-heart-pulse"></i>
+            <span>发情</span>
+          </button>
+          <button class="mode-card" data-mode="restraint">
+            <i class="fa-solid fa-link"></i>
+            <span>拘束</span>
+          </button>
+          <button class="mode-card" data-mode="mindRewrite">
+            <i class="fa-solid fa-brain"></i>
+            <span>常识改变</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mode Detail Modal -->
+      <div class="modal-overlay" id="mode-modal">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3 class="modal-title"><i class="fa-solid fa-book-open"></i> 模式详细说明</h3>
+            <button class="modal-close" id="modal-close">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <div class="modal-body" id="modal-body"></div>
+        </div>
+      </div>
+
+      <!-- Settings Grid -->
+      <div class="settings-grid" id="settings-grid">
+        <!-- Delay -->
+        <div class="setting-card">
+          <div class="setting-card-header">
+            <div class="setting-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+            <button class="setting-detail-btn" data-setting="delay" title="查看详细说明">
+              <i class="fa-solid fa-circle-info"></i>
+            </button>
+          </div>
+          <div class="setting-info">
+            <h3 class="setting-label">催眠诱导延迟</h3>
+            <p class="setting-desc">催眠序列启动前的等待时间</p>
+          </div>
+          <div class="slider-group">
+            <input type="range" class="setting-slider" id="slider-delay" min="1" max="10" value="3" step="1">
+            <span class="slider-value" id="value-delay">3秒</span>
+          </div>
+        </div>
+
+        <!-- Intensity -->
+        <div class="setting-card">
+          <div class="setting-card-header">
+            <div class="setting-icon"><i class="fa-solid fa-bolt"></i></div>
+            <button class="setting-detail-btn" data-setting="intensity" title="查看详细说明">
+              <i class="fa-solid fa-circle-info"></i>
+            </button>
+          </div>
+          <div class="setting-info">
+            <h3 class="setting-label">暗示强度</h3>
+            <p class="setting-desc">催眠暗示波的作用力度</p>
+          </div>
+          <div class="slider-group">
+            <input type="range" class="setting-slider" id="slider-intensity" min="1" max="10" value="5" step="1">
+            <span class="slider-value" id="value-intensity">5/10</span>
+          </div>
+        </div>
+
+        <!-- Obedience Depth -->
+        <div class="setting-card">
+          <div class="setting-card-header">
+            <div class="setting-icon"><i class="fa-solid fa-hurricane"></i></div>
+            <button class="setting-detail-btn" data-setting="obedienceDepth" title="查看详细说明">
+              <i class="fa-solid fa-circle-info"></i>
+            </button>
+          </div>
+          <div class="setting-info">
+            <h3 class="setting-label">服从深度</h3>
+            <p class="setting-desc">目标精神顺从的程度等级</p>
+          </div>
+          <div class="slider-group">
+            <input type="range" class="setting-slider" id="slider-obedienceDepth" min="1" max="5" value="3" step="1">
+            <span class="slider-value" id="value-obedienceDepth">深层</span>
+          </div>
+        </div>
+
+        <!-- Sensitivity -->
+        <div class="setting-card">
+          <div class="setting-card-header">
+            <div class="setting-icon"><i class="fa-solid fa-star-half-stroke"></i></div>
+            <button class="setting-detail-btn" data-setting="sensitivity" title="查看详细说明">
+              <i class="fa-solid fa-circle-info"></i>
+            </button>
+          </div>
+          <div class="setting-info">
+            <h3 class="setting-label">暗示敏感度</h3>
+            <p class="setting-desc">对象的接受性增幅系数</p>
+          </div>
+          <div class="slider-group">
+            <input type="range" class="setting-slider" id="slider-sensitivity" min="1" max="100" value="50" step="1">
+            <span class="slider-value" id="value-sensitivity">50%</span>
+          </div>
+        </div>
+
+        <!-- Resistance -->
+        <div class="setting-card setting-card-full">
+          <div class="setting-card-header">
+            <div class="setting-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <button class="setting-detail-btn" data-setting="resistance" title="查看详细说明">
+              <i class="fa-solid fa-circle-info"></i>
+            </button>
+          </div>
+          <div class="setting-info">
+            <h3 class="setting-label">抵抗抑制</h3>
+            <p class="setting-desc">精神抵抗力的抑制程度</p>
+          </div>
+          <div class="slider-group">
+            <input type="range" class="setting-slider" id="slider-resistance" min="0" max="100" value="30" step="1">
+            <span class="slider-value" id="value-resistance">30%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Start Button -->
+      <div class="start-section">
+        <button class="start-button" id="start-button">
+          <i class="fa-solid fa-bullseye"></i>
+          <span>开 始 催 眠</span>
+        </button>
+        <p class="usage-warning" id="usage-warning"></p>
+      </div>
+
+      <!-- Setting Detail Modal -->
+      <div class="modal-overlay" id="setting-modal">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3 class="modal-title" id="setting-modal-title">
+              <i class="fa-solid fa-circle-info"></i>
+              <span>参数说明</span>
+            </h3>
+            <button class="modal-close" id="setting-modal-close">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <div class="modal-body" id="setting-modal-body"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== Page 3: Animation ==================== -->
+  <section id="page-animation" class="page-section">
+    <div class="animation-container" id="animation-container">
+      <!-- Blackout Phase -->
+      <div class="blackout-overlay" id="blackout-overlay">
+        <span class="blackout-text" id="blackout-text"></span>
+      </div>
+
+      <!-- Spiral -->
+      <div class="spiral" id="spiral"></div>
+
+      <!-- Vignette -->
+      <div class="vignette"></div>
+
+      <!-- Heart -->
+      <div class="heart" id="heart"></div>
+
+      <!-- Particles Container -->
+      <div class="particles" id="particles"></div>
+
+      <!-- Hue Shift Overlay -->
+      <div class="hue-overlay" id="hue-overlay"></div>
+
+      <!-- Exit Button -->
+      <button class="exit-button" id="exit-button" title="退出">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  </section>
+
+  <!-- Scripts (load order matters: config -> utils -> auth -> dashboard -> animation -> app) -->
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/animation.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>

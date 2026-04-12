@@ -1,0 +1,69 @@
+/* ===== CSS Custom Properties ===== */
+:root {
+  /* ---- Background ---- */
+  --bg-primary: #180b10;
+  --bg-gradient: radial-gradient(circle at 20% 30%, #3f1e2b, #180b10);
+  --bg-halo-1: rgba(255, 120, 160, 0.08);
+  --bg-halo-2: rgba(210, 100, 255, 0.06);
+  --bg-surface: rgba(40, 18, 28, 0.45);
+  --bg-surface-hover: rgba(255, 200, 220, 0.06);
+  --bg-surface-active: rgba(255, 200, 220, 0.1);
+
+  /* ---- Borders ---- */
+  --border: rgba(255, 200, 220, 0.1);
+  --border-hover: rgba(255, 200, 220, 0.2);
+
+  /* ---- Text ---- */
+  --text-primary: #fff0f3;
+  --text-secondary: rgba(255, 240, 243, 0.7);
+  --text-muted: rgba(255, 240, 243, 0.5);
+
+  /* ---- Accent Colors ---- */
+  --accent-pink: #ff4d8d;
+  --accent-rose: #e8364f;
+  --accent-purple: #c06dff;
+  --accent-warm: #d9b882;
+  --accent-soft: #ffb3c6;
+  --accent-cyan: #06d6a0;
+  --danger: #ff4444;
+
+  /* ---- Glows ---- */
+  --glow-pink: 0 0 20px rgba(255, 77, 141, 0.3);
+  --glow-rose: 0 0 20px rgba(232, 54, 79, 0.3);
+  --glow-purple: 0 0 20px rgba(192, 109, 255, 0.3);
+
+  /* ---- Spacing ---- */
+  --radius-card: 48px;
+  --radius-inner: 24px;
+  --radius-pill: 60px;
+  --padding-card: 28px 24px 24px;
+  --padding-input: 14px 18px 14px 48px;
+
+  /* ---- Typography ---- */
+  --font-family: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "Inter", monospace;
+
+  /* ---- Shadows ---- */
+  --shadow-card: 0 30px 50px -10px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 200, 220, 0.08) inset,
+    0 8px 20px rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 35px 60px -8px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 200, 220, 0.15) inset;
+
+  /* ---- Animation Speed (controlled by JS) ---- */
+  --rotation-speed: 5s;
+  --heartbeat-speed: 1.2s;
+  --particle-count: 15;
+
+  /* ---- Glassmorphism ---- */
+  --blur: blur(25px) saturate(180%);
+
+  /* ---- Tier Colors ---- */
+  --tier-trial: #888;
+  --tier-basic: #4caf50;
+  --tier-standard: #00bcd4;
+  --tier-advanced: #2196f3;
+  --tier-professional: #9c27b0;
+  --tier-expert: #e91e8f;
+  --tier-master: #d9b882;
+}

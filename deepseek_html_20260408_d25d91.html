@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>天气卡片 · 订阅级臻品</title>
+    <!-- 引入优雅字体 & 图标库 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at 20% 30%, #1e2b3f, #0b1018);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Inter", sans-serif;
+            padding: 20px;
+            position: relative;
+            backdrop-filter: blur(2px);
+        }
+
+        /* 背景光晕 —— 提升层次感 */
+        body::before {
+            content: "";
+            position: fixed;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: radial-gradient(circle at 30% 40%, rgba(120, 180, 255, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(210, 160, 255, 0.06) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 主卡片 —— 极致玻璃质感 + 微光边框 */
+        .weather-card {
+            position: relative;
+            z-index: 10;
+            max-width: 420px;
+            width: 100%;
+            background: rgba(18, 28, 40, 0.45);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border-radius: 48px;
+            padding: 28px 24px 24px;
+            box-shadow: 
+                0 30px 50px -10px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+                0 8px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: card-float 6s infinite ease-in-out;
+        }
+
+        .weather-card:hover {
+            box-shadow: 0 35px 60px -8px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+            transform: translateY(-5px);
+        }
+
+        @keyframes card-float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* 装饰性内发光 */
+        .weather-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 48px;
+            padding: 1.5px;
+            background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.02) 80%);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        /* ----- 头部：位置 + 高级订阅标识 ----- */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 18px;
+        }
+
+        .location-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .city {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+            font-size: 1.5rem;
+            letter-spacing: -0.02em;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .city i {
+            font-size: 1.1rem;
+            color: #9dc6ff;
+            opacity: 0.9;
+        }
+
+        .date {
+            font-size: 0.9rem;
+            font-weight: 400;
+            opacity: 0.8;
+            margin-top: 4px;
+            letter-spacing: 0.2px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        /* 尊贵PRO标识 —— 价值感核心 */
+        .pro-badge {
+            background: linear-gradient(135deg, #d9b882, #f3e5c9);
+            padding: 8px 14px;
+            border-radius: 60px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #0e1a26;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.3), 0 0 0 1px rgba(255, 215, 150, 0.3) inset;
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 0.5px solid rgba(255, 245, 200, 0.7);
+            text-transform: uppercase;
+        }
+
+        .pro-badge i {
+            font-size: 0.9rem;
+            color: #1f2e3f;
+            filter: drop-shadow(0 1px 2px rgba(255,215,150,0.5));
+        }
+
+        /* ----- 主温度 & 天气状况 ----- */
+        .weather-now {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .temp-main {
+            display: flex;
+            align-items: baseline;
+        }
+
+        .temp-value {
+            font-size: 5.2rem;
+            font-weight: 300;
+            letter-spacing: -0.03em;
+            line-height: 1;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        .temp-unit {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-left: 4px;
+            opacity: 0.7;
+        }
+
+        .weather-icon-main {
+            font-size: 3.2rem;
+            margin-right: 8px;
+            filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.3));
+            color: #ffe7b6;
+        }
+
+        .condition-text {
+            font-size: 1.3rem;
+            font-weight: 400;
+            margin-bottom: 10px;
+            opacity: 0.9;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hi-low {
+            display: flex;
+            gap: 16px;
+            font-size: 1rem;
+            font-weight: 400;
+            opacity: 0.85;
+        }
+
+        .hi-low span i {
+            margin-right: 4px;
+            font-size: 0.8rem;
+        }
+
+        /* ----- 四维指标 (价值感细节) ----- */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            margin: 26px 0 22px;
+        }
+
+        .metric-item {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-radius: 24px;
+            padding: 12px 4px;
+            text-align: center;
+            border: 0.5px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 5px 12px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+        }
+
+        .metric-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .metric-item i {
+            font-size: 1.3rem;
+            margin-bottom: 6px;
+            color: #bfd9ff;
+            display: block;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .metric-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            font-weight: 500;
+            opacity: 0.7;
+            margin-bottom: 4px;
+        }
+
+        .metric-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1.2;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.4);
+        }
+
+        .metric-unit {
+            font-size: 0.7rem;
+            font-weight: 400;
+            opacity: 0.7;
+            margin-left: 2px;
+        }
+
+        /* ----- 小时预报 (精致滑动感) ----- */
+        .hourly-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .hourly-title i {
+            color: #ffdb9d;
+            font-size: 1rem;
+        }
+
+        .hourly-title span {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .hourly-scroll {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+            margin-bottom: 18px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.2) transparent;
+        }
+
+        .hourly-scroll::-webkit-scrollbar {
+            height: 3px;
+        }
+
+        .hourly-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.25);
+            border-radius: 10px;
+        }
+
+        .hour-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 52px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 10px 0 8px;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+            border: 0.5px solid rgba(255,255,255,0.03);
+            transition: all 0.2s;
+        }
+
+        .hour-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255,255,240,0.15);
+        }
+
+        .hour-time {
+            font-size: 0.85rem;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .hour-icon {
+            font-size: 1.3rem;
+            margin: 6px 0 4px;
+            color: #ffe0a4;
+        }
+
+        .hour-temp {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* ----- 底部高级订阅条 (价值100+的具象) ----- */
+        .premium-footer {
+            margin-top: 10px;
+            padding-top: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 0.5px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .subscription-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sub-icon {
+            background: rgba(210, 180, 140, 0.2);
+            width: 32px;
+            height: 32px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 0.5px solid rgba(255, 215, 150, 0.3);
+        }
+
+        .sub-icon i {
+            font-size: 1.1rem;
+            color: #e7cfa1;
+        }
+
+        .sub-text {
+            font-weight: 500;
+        }
+
+        .sub-main {
+            font-size: 0.9rem;
+            letter-spacing: -0.2px;
+        }
+
+        .sub-value {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .sub-value i {
+            font-size: 0.6rem;
+            color: #c9b079;
+        }
+
+        .upgrade-chip {
+            background: linear-gradient(145deg, #2a3a4e, #17232e);
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            border: 0.5px solid rgba(255, 220, 150, 0.25);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            backdrop-filter: blur(5px);
+            color: #f0e3ce;
+            transition: all 0.2s;
+        }
+
+        .upgrade-chip i {
+            margin-left: 6px;
+            font-size: 0.7rem;
+            color: #d4b27e;
+        }
+
+        .upgrade-chip:hover {
+            background: #2f4155;
+            border-color: rgba(255, 235, 180, 0.5);
+            cursor: default;
+        }
+
+        /* 微细节：温度符号对齐 */
+        .fa-chevron-right {
+            font-size: 0.65rem;
+        }
+
+        /* 响应式微调 */
+        @media (max-width: 400px) {
+            .weather-card { padding: 20px 18px; }
+            .temp-value { font-size: 4.5rem; }
+            .metrics-grid { gap: 6px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="weather-card">
+        <!-- 头部：定位 + PRO标识（价值锚点） -->
+        <div class="card-header">
+            <div class="location-section">
+                <div class="city">
+                    <i class="fa-solid fa-location-dot"></i> 旧金山
+                    <span style="font-size: 0.9rem; margin-left: 2px; opacity: 0.6; font-weight: 300;">· 湾区</span>
+                </div>
+                <div class="date">
+                    <i class="fa-regular fa-calendar" style="margin-right: 6px;"></i>周一 · 6月10日 
+                </div>
+            </div>
+            <div class="pro-badge">
+                <i class="fa-regular fa-gem"></i> 
+                <span>ELITE · PRO</span>
+            </div>
+        </div>
+
+        <!-- 主温区 + 天气图标 -->
+        <div class="weather-now">
+            <div class="temp-main">
+                <span class="temp-value">23</span>
+                <span class="temp-unit">°C</span>
+            </div>
+            <div class="weather-icon-main">
+                <i class="fa-solid fa-cloud-sun"></i>
+            </div>
+        </div>
+
+        <div class="condition-text">
+            <span>多云 · 局部晴朗</span>
+            <div class="hi-low">
+                <span><i class="fa-solid fa-arrow-up" style="color: #ffb09c;"></i> 26°</span>
+                <span><i class="fa-solid fa-arrow-down" style="color: #9cc5ff;"></i> 17°</span>
+            </div>
+        </div>
+
+        <!-- 四维专业指标 —— 体现数据深度 (订阅级细节) -->
+        <div class="metrics-grid">
+            <div class="metric-item">
+                <i class="fa-solid fa-temperature-low"></i>
+                <div class="metric-label">体感</div>
+                <div class="metric-value">22<span class="metric-unit">°C</span></div>
+            </div>
+            <div class="metric-item">
+                <i class="fa-solid fa-droplet"></i>
+                <div class="metric-label">湿度</div>
+                <div class="metric-value">58<span class="metric-unit">%</span></div>
+            </div>
+            <div class="metric-item">
+                <i class="fa-solid fa-wind"></i>
+                <div class="metric-label">风速</div>
+                <div class="metric-value">12<span class="metric-unit">km/h</span></div>
+            </div>
+            <div class="metric-item">
+                <i class="fa-solid fa-sun"></i>
+                <div class="metric-label">紫外线</div>
+                <div class="metric-value">3<span class="metric-unit">级</span></div>
+            </div>
+        </div>
+
+        <!-- 小时预报 (模拟高级降水/云量预测) -->
+        <div class="hourly-title">
+            <i class="fa-regular fa-clock"></i>
+            <span>未来小时 · 分钟级降水 (PRO)</span>
+            <i class="fa-solid fa-crown" style="margin-left: auto; font-size: 0.8rem; color: #e6c27a;"></i>
+        </div>
+
+        <div class="hourly-scroll">
+            <div class="hour-item">
+                <div class="hour-time">现在</div>
+                <div class="hour-icon"><i class="fa-solid fa-cloud-sun"></i></div>
+                <div class="hour-temp">23°</div>
+            </div>
+            <div class="hour-item">
+                <div class="hour-time">14:00</div>
+                <div class="hour-icon"><i class="fa-solid fa-cloud"></i></div>
+                <div class="hour-temp">24°</div>
+            </div>
+            <div class="hour-item">
+                <div class="hour-time">15:00</div>
+                <div class="hour-icon"><i class="fa-solid fa-cloud-sun"></i></div>
+                <div class="hour-temp">25°</div>
+            </div>
+            <div class="hour-item">
+                <div class="hour-time">16:00</div>
+                <div class="hour-icon"><i class="fa-solid fa-sun"></i></div>
+                <div class="hour-temp">26°</div>
+            </div>
+            <div class="hour-item">
+                <div class="hour-time">17:00</div>
+                <div class="hour-icon"><i class="fa-solid fa-cloud-sun"></i></div>
+                <div class="hour-temp">24°</div>
+            </div>
+            <div class="hour-item">
+                <div class="hour-time">18:00</div>
+                <div class="hour-icon"><i class="fa-solid fa-cloud"></i></div>
+                <div class="hour-temp">22°</div>
+            </div>
+        </div>
+
+        <!-- 底部：高级订阅价值可视化 (价值100+的核心呈现) -->
+        <div class="premium-footer">
+            <div class="subscription-badge">
+                <div class="sub-icon">
+                    <i class="fa-regular fa-star"></i>
+                </div>
+                <div class="sub-text">
+                    <div class="sub-main">年度订阅 · 无限访问</div>
+                    <div class="sub-value">
+                        <i class="fa-regular fa-circle-check"></i> 价值 $129+ 
+                        <span style="margin:0 4px;">•</span> 
+                        <i class="fa-solid fa-infinity"></i> 100+ 数据源
+                    </div>
+                </div>
+            </div>
+            <div class="upgrade-chip">
+                已激活 <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
+
+        <!-- 微细点缀：隐藏在背景里的高级感光效 (纯css) -->
+    </div>
+
+    <!-- 一个小脚本：仅仅为了增加“动态感” —— 可选的模拟刷新提示，但无实际api，保留静态优雅 -->
+    <script>
+        (function(){
+            // 精致小彩蛋：控制台输出订阅级格言 (不影响视觉)
+            console.log('%c✨ 天气卡片 · 订阅价值100+  ✨', 'font-size:14px; background:linear-gradient(145deg, #1e2b3f, #0f1a26); color:#e6d5b8; padding:6px 16px; border-radius:40px; font-weight:500;');
+            // 仅仅让卡片更生动: 可忽略 (没有强制刷新)
+        })();
+    </script>
+</body>
+</html>

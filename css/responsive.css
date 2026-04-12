@@ -1,0 +1,231 @@
+/* ===== Responsive Design ===== */
+
+/* ---- Tablet (768px) ---- */
+@media (max-width: 768px) {
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .setting-card-full {
+    grid-column: 1;
+  }
+
+  .mode-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-container {
+    border-radius: 36px;
+    padding: 20px;
+  }
+
+  .login-card {
+    border-radius: 36px;
+  }
+
+  .heart {
+    width: 80px;
+    height: 72px;
+  }
+
+  .heart::before,
+  .heart::after {
+    width: 42px;
+    height: 64px;
+    border-radius: 42px 42px 0 0;
+  }
+
+  .heart::before {
+    left: 40px;
+  }
+}
+
+/* ---- Mobile (480px) ---- */
+@media (max-width: 480px) {
+  body {
+    padding: 12px;
+  }
+
+  .login-card {
+    border-radius: 28px;
+    padding: 22px 18px 18px;
+  }
+
+  .login-title {
+    font-size: 1.35rem;
+  }
+
+  .login-icon {
+    font-size: 2rem;
+  }
+
+  .dashboard-container {
+    border-radius: 28px;
+    padding: 16px;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .dashboard-user {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .user-info-card {
+    padding: 16px;
+  }
+
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .user-name {
+    font-size: 1rem;
+  }
+
+  .mode-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .mode-card {
+    padding: 12px 6px;
+    font-size: 0.75rem;
+  }
+
+  .mode-card i {
+    font-size: 1.1rem;
+  }
+
+  .modal-card {
+    border-radius: 24px;
+    max-height: 85vh;
+  }
+
+  .modal-header {
+    padding: 16px 18px;
+  }
+
+  .modal-body {
+    padding: 16px 18px;
+  }
+
+  .setting-card {
+    padding: 14px;
+  }
+
+  .setting-label {
+    font-size: 0.82rem;
+  }
+
+  .start-button {
+    padding: 16px 24px;
+    font-size: 1rem;
+    letter-spacing: 4px;
+  }
+
+  .heart {
+    width: 70px;
+    height: 63px;
+  }
+
+  .heart::before,
+  .heart::after {
+    width: 36px;
+    height: 56px;
+    border-radius: 36px 36px 0 0;
+  }
+
+  .heart::before {
+    left: 35px;
+  }
+
+  .exit-button {
+    top: 16px;
+    right: 16px;
+  }
+
+  /* Slider thumb larger on touch */
+  .setting-slider::-webkit-slider-thumb {
+    width: 22px;
+    height: 22px;
+  }
+
+  .setting-slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* ---- Small Mobile (375px) ---- */
+@media (max-width: 375px) {
+  body {
+    padding: 8px;
+  }
+
+  .login-card {
+    border-radius: 24px;
+    padding: 18px 14px 14px;
+  }
+
+  .login-title {
+    font-size: 1.2rem;
+  }
+
+  .login-subtitle {
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+  }
+
+  .dashboard-container {
+    border-radius: 24px;
+    padding: 14px;
+  }
+
+  .settings-grid {
+    gap: 10px;
+  }
+
+  .slider-group {
+    gap: 8px;
+  }
+
+  .slider-value {
+    min-width: 40px;
+    font-size: 0.78rem;
+  }
+}
+
+/* ---- Accessibility: Reduced Motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  .login-card,
+  .dashboard-container {
+    animation: none;
+  }
+
+  .spiral {
+    animation-duration: 30s !important;
+  }
+
+  .heart.active {
+    animation-duration: 3s !important;
+  }
+
+  .particle {
+    animation-duration: 20s !important;
+  }
+
+  .login-icon {
+    animation: none;
+  }
+
+  .start-button {
+    animation: none;
+  }
+}
