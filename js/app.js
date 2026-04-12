@@ -47,8 +47,9 @@
   /** Handle start hypnosis */
   function handleStart() {
     var settings = HypnoApp.getSettings();
+    var mode = HypnoApp.getSelectedMode();
     HypnoApp.showPage('animation');
-    HypnoApp.startAnimation(settings);
+    HypnoApp.startAnimation(settings, mode);
   }
 
   /** Handle exit animation */

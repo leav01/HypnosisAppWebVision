@@ -96,6 +96,170 @@
   to   { --ring-offset: 56px; }
 }
 
+/* ---- Rotating Spiral (Archimedean, canvas-based) ---- */
+.spiral-conic {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 1s ease;
+  z-index: 1;
+}
+
+.spiral-conic.active {
+  opacity: 1;
+  animation: spiral-rotate var(--rotation-speed, 5s) linear infinite;
+}
+
+@keyframes spiral-rotate {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ---- Heart Rings (expanding heart outlines) ---- */
+.heart-rings {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.heart-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  transform: translate(-50%, calc(-50% + 4px)) scale(0);
+  will-change: transform, opacity;
+  animation: heart-ring-expand var(--expand-speed, 2s) linear forwards;
+}
+
+.heart-ring svg {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes heart-ring-expand {
+  0% {
+    transform: translate(-50%, calc(-50% + 4px)) scale(0);
+    opacity: 1;
+  }
+  60% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, calc(-50% + 4px)) scale(18);
+    opacity: 0;
+  }
+}
+
+/* ---- Matrix Rain (mind rewrite mode) ---- */
+.matrix-rain {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.matrix-rain.active {
+  opacity: 1;
+}
+
+.matrix-column {
+  position: absolute;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  animation: matrix-fall linear infinite;
+  font-family: "MS Gothic", "Yu Gothic", monospace;
+  font-size: 15px;
+  line-height: 1.3;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  white-space: nowrap;
+  color: #c040ff;
+  text-shadow: 0 0 8px rgba(192, 64, 255, 0.6);
+}
+
+.matrix-column span {
+  opacity: 0.2;
+  transition: opacity 0.15s, color 0.15s, text-shadow 0.15s;
+}
+
+.matrix-column span.bright {
+  opacity: 1;
+  color: #e8b0ff;
+  text-shadow: 0 0 14px rgba(232, 176, 255, 0.9), 0 0 30px rgba(192, 64, 255, 0.4);
+}
+
+@keyframes matrix-fall {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(100vh); }
+}
+
+/* ---- Brain Icon (mind rewrite mode) ---- */
+.brain-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 1s ease;
+  font-size: 5rem;
+  color: #c040ff;
+  filter:
+    drop-shadow(0 0 25px rgba(192, 64, 255, 0.8))
+    drop-shadow(0 0 60px rgba(192, 64, 255, 0.4))
+    drop-shadow(0 0 100px rgba(192, 64, 255, 0.2));
+}
+
+.brain-icon.active {
+  opacity: 1;
+  animation: brain-pulse var(--heartbeat-speed, 1.2s) infinite;
+}
+
+@keyframes brain-pulse {
+  0%   { transform: translate(-50%, -50%) scale(1);   filter: drop-shadow(0 0 25px rgba(192, 64, 255, 0.8)) drop-shadow(0 0 60px rgba(192, 64, 255, 0.4)); }
+  14%  { transform: translate(-50%, -50%) scale(1.12); filter: drop-shadow(0 0 40px rgba(192, 64, 255, 1))   drop-shadow(0 0 80px rgba(192, 64, 255, 0.6)); }
+  28%  { transform: translate(-50%, -50%) scale(1);   filter: drop-shadow(0 0 25px rgba(192, 64, 255, 0.8)) drop-shadow(0 0 60px rgba(192, 64, 255, 0.4)); }
+  42%  { transform: translate(-50%, -50%) scale(1.08); filter: drop-shadow(0 0 35px rgba(192, 64, 255, 0.9)) drop-shadow(0 0 70px rgba(192, 64, 255, 0.5)); }
+  56%  { transform: translate(-50%, -50%) scale(1);   filter: drop-shadow(0 0 25px rgba(192, 64, 255, 0.8)) drop-shadow(0 0 60px rgba(192, 64, 255, 0.4)); }
+  100% { transform: translate(-50%, -50%) scale(1);   filter: drop-shadow(0 0 25px rgba(192, 64, 255, 0.8)) drop-shadow(0 0 60px rgba(192, 64, 255, 0.4)); }
+}
+
+/* ---- Glitch Flash ---- */
+.glitch-flash {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 6;
+  pointer-events: none;
+  opacity: 0;
+  background: rgba(192, 64, 255, 0.15);
+  mix-blend-mode: screen;
+}
+
+.glitch-flash.flash {
+  animation: glitch-blink 0.15s steps(2) forwards;
+}
+
+@keyframes glitch-blink {
+  0%   { opacity: 1; }
+  50%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+
 /* ---- Vignette (dark edges, tunnel effect) ---- */
 .vignette {
   position: absolute;

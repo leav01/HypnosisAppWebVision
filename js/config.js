@@ -35,10 +35,10 @@ HypnoApp.DEPTH_LABELS = Object.freeze([
 
 // Intensity -> animation speed mapping
 HypnoApp.INTENSITY_LEVELS = Object.freeze([
-  { minIntensity: 1,  maxIntensity: 3,  heartbeatSpeed: '1.5s', expandSpeed: '2.5', saturation: 0.6,  label: '低' },
-  { minIntensity: 4,  maxIntensity: 6,  heartbeatSpeed: '1.2s', expandSpeed: '1.6', saturation: 0.8,  label: '中' },
-  { minIntensity: 7,  maxIntensity: 9,  heartbeatSpeed: '0.8s', expandSpeed: '1.0', saturation: 1.0,  label: '高' },
-  { minIntensity: 10, maxIntensity: 10, heartbeatSpeed: '0.6s', expandSpeed: '0.6', saturation: 1.2,  label: '极限' },
+  { minIntensity: 1,  maxIntensity: 3,  heartbeatSpeed: '1.5s', expandSpeed: '2.5', rotationSpeed: '4s',   saturation: 0.6,  label: '低' },
+  { minIntensity: 4,  maxIntensity: 6,  heartbeatSpeed: '1.2s', expandSpeed: '1.6', rotationSpeed: '2.5s', saturation: 0.8,  label: '中' },
+  { minIntensity: 7,  maxIntensity: 9,  heartbeatSpeed: '0.8s', expandSpeed: '1.0', rotationSpeed: '1.5s', saturation: 1.0,  label: '高' },
+  { minIntensity: 10, maxIntensity: 10, heartbeatSpeed: '0.6s', expandSpeed: '0.6', rotationSpeed: '1s',   saturation: 1.2,  label: '极限' },
 ]);
 
 // Blackout phase text sequence
