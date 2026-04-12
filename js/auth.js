@@ -98,6 +98,7 @@ HypnoApp.validateLogin = function(username, password) {
       tierName: tier.name,
       tierNameEn: tier.nameEn,
       tierColor: tier.color,
+      tierIcon: tier.icon,
       maxUsage: tier.maxUsage,
     }),
   };

@@ -19,16 +19,13 @@ HypnoApp.getSettings = function() {
 HypnoApp.renderDashboard = function(session) {
   var $ = HypnoApp.$;
 
-  // Header
-  $('#header-username').textContent = session.username;
-
   // User info
   $('#user-name').textContent = session.username;
   $('#level-text').textContent = 'Lv.' + session.level;
 
   // Tier badge
   var badge = $('#tier-badge');
-  badge.textContent = session.tierName;
+  badge.innerHTML = '<i class="' + session.tierIcon + '"></i> ' + session.tierName;
 
   // Status dot
   var dot = $('#status-dot');

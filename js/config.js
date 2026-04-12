@@ -9,13 +9,13 @@ HypnoApp.PASSWORD_REGEX = /^ly(\d{2})(\d{4})(\d)(.*)?$/;
 
 // Tier definitions: level range -> max usage, name, color
 HypnoApp.TIER_MAP = Object.freeze([
-  { minLevel: 0,  maxLevel: 0,  maxUsage: 5,    name: '体验用户', nameEn: 'Trial',        color: 'var(--tier-trial)' },
-  { minLevel: 1,  maxLevel: 3,  maxUsage: 20,   name: '初级套餐', nameEn: 'Basic',        color: 'var(--tier-basic)' },
-  { minLevel: 4,  maxLevel: 6,  maxUsage: 50,   name: '标准套餐', nameEn: 'Standard',     color: 'var(--tier-standard)' },
-  { minLevel: 7,  maxLevel: 9,  maxUsage: 100,  name: '进阶套餐', nameEn: 'Advanced',     color: 'var(--tier-advanced)' },
-  { minLevel: 10, maxLevel: 14, maxUsage: 200,  name: '高级套餐', nameEn: 'Professional', color: 'var(--tier-professional)' },
-  { minLevel: 15, maxLevel: 19, maxUsage: 500,  name: '超级套餐', nameEn: 'Expert',       color: 'var(--tier-expert)' },
-  { minLevel: 20, maxLevel: 99, maxUsage: 9999, name: '至尊套餐', nameEn: 'Master',       color: 'var(--tier-master)' },
+  { minLevel: 0,  maxLevel: 0,  maxUsage: 5,    name: '体验用户', nameEn: 'Trial',        color: 'var(--tier-trial)',        icon: 'fa-solid fa-seedling' },
+  { minLevel: 1,  maxLevel: 3,  maxUsage: 20,   name: '初级套餐', nameEn: 'Basic',        color: 'var(--tier-basic)',        icon: 'fa-solid fa-shield' },
+  { minLevel: 4,  maxLevel: 6,  maxUsage: 50,   name: '标准套餐', nameEn: 'Standard',     color: 'var(--tier-standard)',     icon: 'fa-solid fa-star' },
+  { minLevel: 7,  maxLevel: 9,  maxUsage: 100,  name: '进阶套餐', nameEn: 'Advanced',     color: 'var(--tier-advanced)',     icon: 'fa-solid fa-bolt' },
+  { minLevel: 10, maxLevel: 14, maxUsage: 200,  name: '高级套餐', nameEn: 'Professional', color: 'var(--tier-professional)', icon: 'fa-solid fa-gem' },
+  { minLevel: 15, maxLevel: 19, maxUsage: 500,  name: '超级套餐', nameEn: 'Expert',       color: 'var(--tier-expert)',       icon: 'fa-solid fa-fire' },
+  { minLevel: 20, maxLevel: 99, maxUsage: 9999, name: '至尊套餐', nameEn: 'Master',       color: 'var(--tier-master)',       icon: 'fa-solid fa-crown' },
 ]);
 
 // Default slider settings
