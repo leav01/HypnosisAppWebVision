@@ -614,6 +614,9 @@
   border-radius: 2px;
   outline: none;
   cursor: pointer;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* WebKit Thumb */
