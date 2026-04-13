@@ -537,6 +537,8 @@
   border: 0.5px solid rgba(255, 255, 255, 0.05);
   box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
   transition: all 0.2s ease;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .setting-card:hover {
