@@ -2,18 +2,6 @@
 
 /* ---- Tablet (768px) ---- */
 @media (max-width: 768px) {
-  .settings-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .setting-card-full {
-    grid-column: 1;
-  }
-
-  .mode-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .dashboard-container {
     border-radius: 36px;
     padding: 20px;
@@ -40,96 +28,285 @@
   }
 }
 
-/* ---- Mobile (480px) ---- */
+/* ---- Mobile App Mode (480px) ---- */
 @media (max-width: 480px) {
+  /* Body: no padding, fill screen */
   body {
-    padding: 12px;
+    padding: 0;
+    min-height: 100dvh;
   }
 
-  .login-card {
-    border-radius: 28px;
-    padding: 22px 18px 18px;
+  /* Dashboard: fill screen with glassmorphism card */
+  body[data-active-page="dashboard"] {
+    align-items: stretch;
+    padding: 6px;
+    overflow: hidden;
   }
 
-  .login-title {
-    font-size: 1.35rem;
-  }
-
-  .login-icon {
-    font-size: 2rem;
+  #page-dashboard {
+    height: 100dvh;
+    align-items: stretch;
   }
 
   .dashboard-container {
-    border-radius: 28px;
-    padding: 16px;
+    border-radius: 20px;
+    padding: 0;
+    max-width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
   }
 
   .dashboard-header {
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-start;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(40, 18, 28, 0.85);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    margin: 0;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    border-radius: 20px 20px 0 0;
+    flex-shrink: 0;
   }
 
-  .dashboard-user {
-    width: 100%;
-    justify-content: space-between;
+  .dashboard-title {
+    font-size: 0.95rem;
   }
 
+  .logout-button {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+    border-radius: 16px;
+  }
+
+  /* User info card */
   .user-info-card {
-    padding: 16px;
+    padding: 14px 16px;
+    margin: 10px 12px 0;
+    border-radius: 16px;
+    flex-shrink: 0;
+  }
+
+  .user-info-top {
+    gap: 10px;
+    margin-bottom: 10px;
   }
 
   .user-avatar {
-    width: 40px;
-    height: 40px;
-    font-size: 1rem;
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
   }
 
   .user-name {
-    font-size: 1rem;
+    font-size: 0.92rem;
+    margin-bottom: 2px;
+  }
+
+  .level-text {
+    font-size: 0.78rem;
+  }
+
+  .tier-badge {
+    font-size: 0.62rem;
+    padding: 3px 8px;
+  }
+
+  .usage-label,
+  .xp-label {
+    font-size: 0.72rem;
+    margin-bottom: 5px;
+  }
+
+  .progress-bar-track {
+    height: 5px;
+  }
+
+  .xp-section {
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+
+  .xp-hint {
+    font-size: 0.65rem;
+    margin-top: 4px;
+  }
+
+  /* Mode selector */
+  .mode-section {
+    padding: 0 12px;
+    margin: 10px 0 0;
+    flex-shrink: 0;
+  }
+
+  .mode-header {
+    margin-bottom: 8px;
+  }
+
+  .mode-title {
+    font-size: 0.82rem;
+  }
+
+  .mode-detail-btn {
+    padding: 4px 8px;
+    font-size: 0.65rem;
   }
 
   .mode-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
   }
 
   .mode-card {
-    padding: 12px 6px;
-    font-size: 0.75rem;
+    padding: 10px 4px;
+    font-size: 0.68rem;
+    gap: 5px;
+    border-radius: 14px;
   }
 
   .mode-card i {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 
-  .modal-card {
+  /* Settings grid: 2 columns, fills remaining space */
+  .settings-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 0;
+    padding: 10px 12px;
+    flex: 1;
+    align-content: start;
+  }
+
+  .setting-card {
+    padding: 10px;
+    border-radius: 14px;
+  }
+
+  .setting-icon {
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+
+  .setting-detail-btn {
+    width: 22px;
+    height: 22px;
+    font-size: 0.65rem;
+  }
+
+  .setting-label {
+    font-size: 0.75rem;
+    margin-bottom: 2px;
+  }
+
+  .setting-desc {
+    font-size: 0.6rem;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .slider-group {
+    gap: 6px;
+  }
+
+  .setting-slider {
+    height: 3px;
+  }
+
+  .setting-slider::-webkit-slider-thumb {
+    width: 18px;
+    height: 18px;
+  }
+
+  .setting-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+  }
+
+  .slider-value {
+    min-width: 36px;
+    font-size: 0.72rem;
+  }
+
+  /* Start button: sticky at bottom */
+  .start-section {
+    position: sticky;
+    bottom: 0;
+    padding: 10px 12px;
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+    background: linear-gradient(to top, rgba(40, 18, 28, 0.95) 60%, transparent);
+    flex-shrink: 0;
+    z-index: 20;
+  }
+
+  .start-button {
+    padding: 14px 20px;
+    font-size: 0.95rem;
+    letter-spacing: 4px;
+    border-radius: 40px;
+  }
+
+  .usage-warning {
+    font-size: 0.72rem;
+    margin-top: 6px;
+  }
+
+  /* Login: centered card with slight padding */
+  body[data-active-page="login"] {
+    padding: 16px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .login-card {
     border-radius: 24px;
+    padding: 20px 16px 16px;
+  }
+
+  .login-title {
+    font-size: 1.3rem;
+  }
+
+  .login-icon {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+  }
+
+  .login-header {
+    margin-bottom: 20px;
+  }
+
+  .input-group {
+    margin-bottom: 12px;
+  }
+
+  .login-button {
+    padding: 14px;
+    font-size: 0.95rem;
+  }
+
+  .login-footer {
+    margin-top: 18px;
+  }
+
+  /* Modal */
+  .modal-card {
+    border-radius: 20px;
     max-height: 85vh;
   }
 
   .modal-header {
-    padding: 16px 18px;
+    padding: 14px 16px;
   }
 
   .modal-body {
-    padding: 16px 18px;
+    padding: 14px 16px;
   }
 
-  .setting-card {
-    padding: 14px;
-  }
-
-  .setting-label {
-    font-size: 0.82rem;
-  }
-
-  .start-button {
-    padding: 16px 24px;
-    font-size: 1rem;
-    letter-spacing: 4px;
-  }
-
+  /* Animation elements */
   .heart {
     width: 70px;
     height: 63px;
@@ -150,55 +327,74 @@
     top: 16px;
     right: 16px;
   }
-
-  /* Slider thumb larger on touch */
-  .setting-slider::-webkit-slider-thumb {
-    width: 22px;
-    height: 22px;
-  }
-
-  .setting-slider::-moz-range-thumb {
-    width: 22px;
-    height: 22px;
-  }
 }
 
 /* ---- Small Mobile (375px) ---- */
 @media (max-width: 375px) {
-  body {
-    padding: 8px;
-  }
-
   .login-card {
-    border-radius: 24px;
-    padding: 18px 14px 14px;
+    border-radius: 20px;
+    padding: 16px 12px 12px;
   }
 
   .login-title {
-    font-size: 1.2rem;
+    font-size: 1.15rem;
   }
 
   .login-subtitle {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     letter-spacing: 1px;
   }
 
   .dashboard-container {
-    border-radius: 24px;
-    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .dashboard-header {
+    padding: 10px 12px;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .user-info-card {
+    padding: 10px 12px;
+    margin: 8px 10px 0;
+  }
+
+  .mode-section {
+    padding: 0 10px;
+    margin-top: 8px;
   }
 
   .settings-grid {
-    gap: 10px;
+    gap: 6px;
+    padding: 8px 10px;
   }
 
-  .slider-group {
-    gap: 8px;
+  .setting-card {
+    padding: 8px;
+  }
+
+  .setting-label {
+    font-size: 0.7rem;
+  }
+
+  .setting-desc {
+    font-size: 0.56rem;
+    margin-bottom: 6px;
   }
 
   .slider-value {
-    min-width: 40px;
-    font-size: 0.78rem;
+    min-width: 32px;
+    font-size: 0.68rem;
+  }
+
+  .start-section {
+    padding: 8px 12px;
+  }
+
+  .start-button {
+    padding: 12px 16px;
+    font-size: 0.88rem;
+    letter-spacing: 3px;
   }
 }
 

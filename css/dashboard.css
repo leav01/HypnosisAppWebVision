@@ -216,6 +216,62 @@
   background: linear-gradient(90deg, var(--danger), #cc0000);
 }
 
+/* ---- XP / Upgrade Section ---- */
+.xp-section {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.xp-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.xp-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.xp-icon {
+  color: var(--accent-purple);
+  font-size: 0.75rem;
+}
+
+.xp-count {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-purple);
+}
+
+.xp-bar-fill {
+  background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink)) !important;
+}
+
+.xp-hint {
+  margin-top: 6px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.xp-hint .xp-remaining {
+  color: var(--accent-purple);
+  font-weight: 600;
+}
+
+.xp-hint .xp-next-tier {
+  color: var(--accent-warm);
+  font-weight: 600;
+}
+
+.xp-section.max-level .xp-hint {
+  color: var(--accent-warm);
+}
+
 /* ---- Mode Selector ---- */
 .mode-section {
   margin-bottom: 20px;

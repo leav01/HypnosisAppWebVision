@@ -4,10 +4,10 @@ var HypnoApp = window.HypnoApp || {};
 
 HypnoApp.APP_VERSION = 'v4.2.1';
 
-// Password format: ly + 2-digit level + 4-digit usage + 1-digit verbose flag + optional suffix
-HypnoApp.PASSWORD_REGEX = /^ly(\d{2})(\d{4})(\d)(.*)?$/;
+// Password format: ly + 2-digit package level + 2-digit usage level + 3-digit XP + 4-digit usage count + 1-digit verbose flag + optional suffix
+HypnoApp.PASSWORD_REGEX = /^ly(\d{2})(\d{2})(\d{3})(\d{4})(\d)(.*)?$/;
 
-// Tier definitions: level range -> max usage, name, color
+// Tier definitions: package level range -> max usage, name, color
 HypnoApp.TIER_MAP = Object.freeze([
   { minLevel: 0,  maxLevel: 0,  maxUsage: 5,    name: '体验用户', nameEn: 'Trial',        color: 'var(--tier-trial)',        icon: 'fa-solid fa-seedling' },
   { minLevel: 1,  maxLevel: 3,  maxUsage: 20,   name: '初级套餐', nameEn: 'Basic',        color: 'var(--tier-basic)',        icon: 'fa-solid fa-shield' },
@@ -17,6 +17,14 @@ HypnoApp.TIER_MAP = Object.freeze([
   { minLevel: 15, maxLevel: 19, maxUsage: 500,  name: '超级套餐', nameEn: 'Expert',       color: 'var(--tier-expert)',       icon: 'fa-solid fa-fire' },
   { minLevel: 20, maxLevel: 99, maxUsage: 9999, name: '至尊套餐', nameEn: 'Master',       color: 'var(--tier-master)',       icon: 'fa-solid fa-crown' },
 ]);
+
+/**
+ * Calculate XP needed to reach next usage level.
+ * Formula: (currentLevel + 1) * 100, capped at 999.
+ */
+HypnoApp.getNextLevelXP = function(usageLevel) {
+  return Math.min((usageLevel + 1) * 100, 999);
+};
 
 // Default slider settings
 HypnoApp.DEFAULT_SETTINGS = Object.freeze({

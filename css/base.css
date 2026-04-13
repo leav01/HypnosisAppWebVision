@@ -57,6 +57,11 @@ body[data-active-page="animation"] #page-animation {
   justify-content: center;
 }
 
+body[data-active-page="dashboard"] {
+  align-items: flex-start;
+  overflow-y: auto;
+}
+
 body[data-active-page="animation"] {
   padding: 0;
   overflow: hidden;

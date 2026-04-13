@@ -21,7 +21,7 @@ HypnoApp.renderDashboard = function(session) {
 
   // User info
   $('#user-name').textContent = session.username;
-  $('#level-text').textContent = 'Lv.' + session.level;
+  $('#level-text').textContent = 'Lv.' + session.usageLevel;
 
   // Tier badge
   var badge = $('#tier-badge');
@@ -44,6 +44,28 @@ HypnoApp.renderDashboard = function(session) {
     fill.classList.add('danger');
   } else if (usagePercent > 80) {
     fill.classList.add('warning');
+  }
+
+  // XP / Usage level upgrade progress
+  var xpSection = $('#xp-section');
+  var xpFill = $('#xp-bar-fill');
+  var xpCount = $('#xp-count');
+  var xpHint = $('#xp-hint');
+  var nextXP = session.nextLevelXP;
+
+  if (nextXP > 0) {
+    var xpPercent = Math.min((session.xp / nextXP) * 100, 100);
+    var remaining = Math.max(nextXP - session.xp, 0);
+    xpCount.textContent = session.xp + ' / ' + nextXP;
+    xpFill.style.width = xpPercent + '%';
+    xpHint.innerHTML = '距离 <span class="xp-next-tier">Lv.' + (session.usageLevel + 1) +
+      '</span> 还需 <span class="xp-remaining">' + remaining + '</span> 经验';
+    xpSection.classList.remove('max-level');
+  } else {
+    xpCount.textContent = 'MAX';
+    xpFill.style.width = '100%';
+    xpHint.innerHTML = '已达最高使用等级';
+    xpSection.classList.add('max-level');
   }
 
   // Start button / usage limit
