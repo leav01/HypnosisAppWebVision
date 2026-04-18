@@ -41,13 +41,73 @@ HypnoApp.DEPTH_LABELS = Object.freeze([
   '轻度', '中度', '深层', '极深', '绝对'
 ]);
 
-// Intensity -> animation speed mapping
-HypnoApp.INTENSITY_LEVELS = Object.freeze([
-  { minIntensity: 1,  maxIntensity: 3,  heartbeatSpeed: '1.5s', expandSpeed: '2.5', rotationSpeed: '4s',   saturation: 0.6,  label: '低' },
-  { minIntensity: 4,  maxIntensity: 6,  heartbeatSpeed: '1.2s', expandSpeed: '1.6', rotationSpeed: '2.5s', saturation: 0.8,  label: '中' },
-  { minIntensity: 7,  maxIntensity: 9,  heartbeatSpeed: '0.8s', expandSpeed: '1.0', rotationSpeed: '1.5s', saturation: 1.0,  label: '高' },
-  { minIntensity: 10, maxIntensity: 10, heartbeatSpeed: '0.6s', expandSpeed: '0.6', rotationSpeed: '1s',   saturation: 1.2,  label: '极限' },
+// Base durations (seconds) at intensity = 5 (the "normal" reference point).
+// Chosen so that all four modes feel equivalently paced at the baseline.
+HypnoApp.BASE_DURATIONS = Object.freeze({
+  heartbeat:       1.0,   // heart / brain pulse (≈ 60 BPM resting)
+  rotation:        1.2,   // spiral-conic full revolution (10→0.35s/rev)
+  ringExpand:      0.8,   // restraint concentric ring cycle (10→0.23s/cycle)
+  heartRingExpand: 2.4,   // arousal heart-shaped ring full expansion
+  matrixFall:      5.0,   // matrix column top-to-bottom fall
+  matrixSwap:      0.18,  // matrix character swap average interval
+  glitchCheck:     2.0,   // glitch-flash trigger check interval
+});
+
+// Continuous intensity -> speed curve: multiplier = base^(intensity - reference)
+// At intensity 5 → 1.00× (normal), 1 → 0.37×, 10 → 3.44× (≈ 9× range).
+HypnoApp.INTENSITY_CURVE = Object.freeze({
+  base:      1.28,
+  reference: 5,
+  min:       1,
+  max:       10,
+});
+
+// Labels for the intensity slider, still keyed by tier for UX copy.
+HypnoApp.INTENSITY_LABELS = Object.freeze([
+  { min: 1,  max: 3,  label: '低' },
+  { min: 4,  max: 6,  label: '中' },
+  { min: 7,  max: 9,  label: '高' },
+  { min: 10, max: 10, label: '极限' },
 ]);
+
+/**
+ * Exponential speed multiplier for a given intensity (1-10).
+ * intensity = 5 → 1.0 (baseline); higher = faster animations.
+ */
+HypnoApp.getSpeedMultiplier = function(intensity) {
+  var curve = HypnoApp.INTENSITY_CURVE;
+  var i = Math.max(curve.min, Math.min(curve.max, intensity || curve.reference));
+  return Math.pow(curve.base, i - curve.reference);
+};
+
+/**
+ * Resolve all per-mode animation durations (seconds) for a given intensity.
+ * Each duration is BASE / multiplier so higher intensity yields shorter cycles.
+ */
+HypnoApp.getAnimationDurations = function(intensity) {
+  var m = HypnoApp.getSpeedMultiplier(intensity);
+  var b = HypnoApp.BASE_DURATIONS;
+  return {
+    multiplier:      m,
+    heartbeat:       b.heartbeat / m,
+    rotation:        b.rotation / m,
+    ringExpand:      b.ringExpand / m,
+    heartRingExpand: b.heartRingExpand / m,
+    matrixFall:      b.matrixFall / m,
+    matrixSwap:      b.matrixSwap / m,
+    glitchCheck:     b.glitchCheck / m,
+  };
+};
+
+/**
+ * Get the tier label for an intensity value (low / mid / high / limit).
+ */
+HypnoApp.getIntensityLabel = function(intensity) {
+  var entry = HypnoApp.INTENSITY_LABELS.find(function(l) {
+    return intensity >= l.min && intensity <= l.max;
+  });
+  return entry ? entry.label : '';
+};
 
 // Blackout phase text sequence
 HypnoApp.BLACKOUT_MESSAGES = Object.freeze([
@@ -160,11 +220,11 @@ HypnoApp.SLIDER_CONFIG = Object.freeze([
     min: 1, max: 10, step: 1,
     format: function(v) { return v + '/10'; },
     details: [
-      '功能说明：控制催眠视觉效果的整体强度，影响螺旋旋转速度、心跳频率和色彩饱和度',
-      '低强度（1-3）：螺旋缓慢旋转（8秒/圈），心跳柔和（1.5秒/拍），色彩淡雅，适合轻度放松',
-      '中强度（4-6）：螺旋中速旋转（5秒/圈），心跳稳定（1.2秒/拍），色彩正常，标准催眠效果',
-      '高强度（7-9）：螺旋快速旋转（3秒/圈），心跳加速（0.8秒/拍），色彩鲜艳，深度催眠',
-      '极限强度（10）：螺旋极速旋转（2秒/圈），心跳急促（0.6秒/拍），色彩过饱和，最大催眠效果',
+      '功能说明：控制催眠视觉效果的整体节奏，每一档都会带来可感知的速度变化（指数曲线）',
+      '强度 1（0.37× 速度）：极缓慢节奏，螺旋约 3.2 秒/圈，心跳约 2.7 秒/拍，适合轻度放松与引导',
+      '强度 5（1.00× 速度）：基准节奏，螺旋 1.2 秒/圈，心跳 1 秒/拍（≈ 静息心率），标准催眠效果',
+      '强度 7-8（1.64-2.10× 速度）：明显加速，螺旋 0.57-0.73 秒/圈，心跳 0.5 秒/拍，深度催眠',
+      '强度 10（3.44× 速度）：极限节奏，螺旋 0.35 秒/圈，心跳 0.29 秒/拍，最大冲击力',
     ],
   },
   {

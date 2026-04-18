@@ -7,6 +7,11 @@ var _timers = [];
 var _intervals = [];
 var _rings = [];
 
+// Matrix rain shared-scheduler state (cleaned in cleanup())
+var _matrixRafId = 0;
+var _matrixColumns = [];      // { el, spans }
+var _brightSpans = [];        // { span, expireAt }
+
 // Heart SVG path (standard heart shape, viewBox 0 0 24 24)
 var HEART_SVG_PATH = 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z';
 
@@ -85,16 +90,6 @@ function drawSpiral() {
 }
 
 /**
- * Get intensity level config for a given intensity value
- */
-function getIntensityConfig(intensity) {
-  var config = HypnoApp.INTENSITY_LEVELS.find(function(l) {
-    return intensity >= l.minIntensity && intensity <= l.maxIntensity;
-  });
-  return config || HypnoApp.INTENSITY_LEVELS[1];
-}
-
-/**
  * Start the hypnosis animation sequence
  */
 HypnoApp.startAnimation = function(settings, mode) {
@@ -113,11 +108,12 @@ HypnoApp.startAnimation = function(settings, mode) {
   // Determine which elements to show for this mode
   var elements = MODE_ELEMENTS[mode] || MODE_ELEMENTS.hypnosis;
 
-  // Apply intensity settings
-  var intensityConfig = getIntensityConfig(settings.intensity);
-  container.style.setProperty('--heartbeat-speed', intensityConfig.heartbeatSpeed);
-  container.style.setProperty('--expand-speed', intensityConfig.expandSpeed + 's');
-  container.style.setProperty('--rotation-speed', intensityConfig.rotationSpeed);
+  // Resolve unified per-mode durations from the continuous intensity curve.
+  var durations = HypnoApp.getAnimationDurations(settings.intensity);
+  container.style.setProperty('--heartbeat-speed',   durations.heartbeat + 's');
+  container.style.setProperty('--expand-speed',      durations.ringExpand + 's');
+  container.style.setProperty('--rotation-speed',    durations.rotation + 's');
+  container.style.setProperty('--heart-ring-expand', durations.heartRingExpand + 's');
 
   // Reset all states
   blackout.classList.remove('hidden');
@@ -165,8 +161,8 @@ HypnoApp.startAnimation = function(settings, mode) {
       if (elements.spiral)      spiral.classList.add('active');
       if (elements.spiralConic) { drawSpiral(); spiralConic.classList.add('active'); }
       if (elements.heart)       heart.classList.add('active');
-      if (elements.heartRings)  startHeartRings(intensityConfig);
-      if (elements.matrixRain)  { matrixRain.classList.add('active'); startMatrixRain(intensityConfig); }
+      if (elements.heartRings)  startHeartRings(durations);
+      if (elements.matrixRain)  { matrixRain.classList.add('active'); startMatrixRain(durations); }
       if (elements.brainIcon)   brainIcon.classList.add('active');
 
       // Auto-exit after duration
@@ -183,14 +179,13 @@ HypnoApp.startAnimation = function(settings, mode) {
 };
 
 /**
- * Start spawning heart-shaped rings at regular intervals
+ * Start spawning heart-shaped rings at regular intervals.
+ * Duration comes directly from the unified curve — no magic multiplier.
  */
-function startHeartRings(intensityConfig) {
-  // Heart rings need longer duration than circle rings (3x slower)
-  var expandMs = parseFloat(intensityConfig.expandSpeed) * 1000 * 3;
+function startHeartRings(durations) {
+  var expandMs = durations.heartRingExpand * 1000;
   var spawnInterval = expandMs / 5;
 
-  // Spawn first immediately
   spawnHeartRing(expandMs);
 
   var intervalId = setInterval(function() {
@@ -249,72 +244,107 @@ HypnoApp.stopAnimation = function() {
 };
 
 /**
- * Start matrix rain effect
+ * Pick column spacing based on viewport — denser on desktop, sparser on mobile.
  */
-function startMatrixRain(intensityConfig) {
+function getMatrixColumnSpacing() {
+  var w = window.innerWidth;
+  if (w < 640) return 28;   // phone
+  if (w < 1024) return 24;  // tablet
+  return 22;                // desktop
+}
+
+/**
+ * Start matrix rain effect using a single shared rAF scheduler.
+ * Falls at durations.matrixFall seconds ± 30% random per column.
+ */
+function startMatrixRain(durations) {
   var container = HypnoApp.$('#matrix-rain');
   if (!container) return;
 
-  var columnCount = Math.floor(window.innerWidth / 14);
-  var baseSpeed = 4 + (1 - parseFloat(intensityConfig.expandSpeed) / 3) * 3;
+  var spacing = getMatrixColumnSpacing();
+  var columnCount = Math.floor(window.innerWidth / spacing);
+  var fallBase = durations.matrixFall;
 
+  _matrixColumns = [];
+  _brightSpans = [];
+
+  var frag = document.createDocumentFragment();
   for (var i = 0; i < columnCount; i++) {
-    createMatrixColumn(container, i, columnCount, baseSpeed);
+    var col = buildMatrixColumn(i, columnCount, fallBase);
+    frag.appendChild(col.el);
+    _matrixColumns.push(col);
   }
+  container.appendChild(frag);
 
-  // Random glitch flashes
-  var glitchInterval = setInterval(function() {
-    if (Math.random() < 0.3) {
-      triggerGlitch();
+  // Shared rAF scheduler: char swaps + bright-span expiry sweep.
+  var swapPerFrame = Math.max(2, Math.round(columnCount * 0.08));
+  var swapAvgMs = durations.matrixSwap * 1000;
+  var lastSwapAt = 0;
+
+  function tick(now) {
+    // 1. Swap a handful of characters each tick, paced by matrixSwap duration.
+    if (now - lastSwapAt >= swapAvgMs * 0.5) {
+      lastSwapAt = now;
+      for (var s = 0; s < swapPerFrame; s++) {
+        var col = _matrixColumns[(Math.random() * _matrixColumns.length) | 0];
+        if (!col || !col.spans.length) continue;
+        var spanIdx = (Math.random() * col.spans.length) | 0;
+        col.spans[spanIdx].textContent = MATRIX_CHARS[(Math.random() * MATRIX_CHARS.length) | 0];
+
+        // Frequently mark a span as bright (deferred expiry).
+        if (Math.random() < 0.85) {
+          var hi = col.spans[(Math.random() * col.spans.length) | 0];
+          if (!hi.classList.contains('bright')) {
+            hi.classList.add('bright');
+            _brightSpans.push({ span: hi, expireAt: now + 450 + Math.random() * 600 });
+          }
+        }
+      }
     }
-  }, 2000);
+
+    // 2. Sweep expired highlights.
+    for (var b = _brightSpans.length - 1; b >= 0; b--) {
+      if (_brightSpans[b].expireAt <= now) {
+        _brightSpans[b].span.classList.remove('bright');
+        _brightSpans.splice(b, 1);
+      }
+    }
+
+    _matrixRafId = requestAnimationFrame(tick);
+  }
+  _matrixRafId = requestAnimationFrame(tick);
+
+  // Occasional glitch flash — slightly slower cadence than before.
+  var glitchMs = Math.max(800, durations.glitchCheck * 1000);
+  var glitchInterval = setInterval(function() {
+    if (Math.random() < 0.25) triggerGlitch();
+  }, glitchMs);
   _intervals.push(glitchInterval);
 }
 
 /**
- * Create a single matrix rain column
+ * Build a single matrix rain column DOM node and return { el, spans }.
+ * The column uses a pure CSS keyframe for fall; no per-column JS timers.
  */
-function createMatrixColumn(container, index, totalColumns, baseSpeed) {
-  var col = document.createElement('div');
-  col.className = 'matrix-column';
-  col.style.left = (index / totalColumns * 100) + '%';
+function buildMatrixColumn(index, totalColumns, fallBase) {
+  var el = document.createElement('div');
+  el.className = 'matrix-column';
+  el.style.left = (index / totalColumns * 100) + '%';
 
-  var speed = baseSpeed + Math.random() * 4;
+  // Per-column speed: baseline ± 30% for natural desynchronization.
+  var speed = fallBase * (0.85 + Math.random() * 0.3);
   var delay = Math.random() * speed;
-  col.style.animationDuration = speed + 's';
-  col.style.animationDelay = '-' + delay + 's';
+  el.style.animationDuration = speed + 's';
+  el.style.animationDelay = '-' + delay + 's';
 
-  // Generate random characters
-  var charCount = 20 + Math.floor(Math.random() * 20);
+  var charCount = 20 + ((Math.random() * 20) | 0);
   var html = '';
   for (var j = 0; j < charCount; j++) {
-    var ch = MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)];
-    html += '<span>' + ch + '</span>';
+    html += '<span>' + MATRIX_CHARS[(Math.random() * MATRIX_CHARS.length) | 0] + '</span>';
   }
-  col.innerHTML = html;
+  el.innerHTML = html;
 
-  container.appendChild(col);
-
-  // Periodically swap characters and randomly highlight
-  var swapInterval = setInterval(function() {
-    var spans = col.querySelectorAll('span');
-    if (spans.length === 0) return;
-
-    // Swap a random character
-    var idx = Math.floor(Math.random() * spans.length);
-    spans[idx].textContent = MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)];
-
-    // Random highlight: pick a random span to glow bright
-    var hlIdx = Math.floor(Math.random() * spans.length);
-    spans[hlIdx].classList.add('bright');
-
-    // Remove highlight after a short time
-    var hlTimer = setTimeout(function() {
-      spans[hlIdx].classList.remove('bright');
-    }, 150 + Math.random() * 300);
-    _timers.push(hlTimer);
-  }, 100 + Math.random() * 200);
-  _intervals.push(swapInterval);
+  return { el: el, spans: Array.prototype.slice.call(el.children) };
 }
 
 /**
@@ -329,7 +359,7 @@ function triggerGlitch() {
 }
 
 /**
- * Clean up all timers, intervals, and spawned elements
+ * Clean up all timers, intervals, rAF loops, and spawned elements
  */
 function cleanup() {
   _timers.forEach(function(id) { clearTimeout(id); });
@@ -338,6 +368,13 @@ function cleanup() {
 
   _intervals.forEach(function(id) { clearInterval(id); });
   _intervals = [];
+
+  if (_matrixRafId) {
+    cancelAnimationFrame(_matrixRafId);
+    _matrixRafId = 0;
+  }
+  _matrixColumns = [];
+  _brightSpans = [];
 
   _rings.forEach(function(el) {
     if (el.parentNode) el.parentNode.removeChild(el);
